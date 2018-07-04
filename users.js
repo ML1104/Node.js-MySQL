@@ -1,7 +1,5 @@
 exports.usersList = function(req, res) {
     var mysql = require('mysql');
-
-    var tables = "SELECT * FROM users";
     
     var connection = mysql.createConnection({
         host: "localhost",
@@ -12,12 +10,18 @@ exports.usersList = function(req, res) {
     
     connection.connect()
     
-    connection.query(tables, function (err, rows, fields) {
+    connection.query("SELECT * FROM users", function (err, data) {
         if (err) throw err
         
-        console.log(rows)
+        app.get('/users', function (req, res) {
+            var users = '';
+            for (var i = 0; i < data.length; i++) {
+                users = data[i].users + "+ ";
+            }
+            res.send("Users: " + users)
+        })
     })
 
-    res.send(tables);
+    connection.end();
 }
 
